@@ -26,14 +26,18 @@ export default function Index() {
     document.title = "Manus Clone — Agente AI";
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null);
-      if (!session) navigate("/auth", { replace: true });
     });
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) navigate("/auth", { replace: true });
-      else setUser(data.session.user);
-    });
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        setUser(data.session.user);
+      } else {
+        const { data: anon, error } = await supabase.auth.signInAnonymously();
+        if (!error && anon.user) setUser(anon.user);
+      }
+    })();
     return () => sub.subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   // load conversations
   useEffect(() => {
