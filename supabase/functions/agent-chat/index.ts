@@ -1,4 +1,5 @@
 // Mistral-powered agent with planning + tools (web search, artifacts)
+// v2 - redeploy to pick up MISTRAL_API_KEY secret
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
